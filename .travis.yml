@@ -6,4 +6,5 @@ before_install:
   - sudo apt-get -y install python
 install:
   - pip install -r requirements.txt
-script: echo 'hello'
+script: pytest -q test_CreditCardValidation.py
+
