@@ -5,6 +5,10 @@ python:
 before_install:
   - sudo apt-get -y install python
 install:
+  - pip install coveralls
   - pip install -r requirements.txt
-script: pytest -q test_CreditCardValidation.py
-
+script: 
+  - pytest -q test_CreditCardValidation.py
+  - coverage run --source=home test_CreditCardValidation.py
+after_success:
+  - coveralls
