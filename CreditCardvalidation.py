@@ -3,27 +3,8 @@ Python script to check validity of credit card numbers
 """
 
 import sys
-
-
-def usage():
-    msg = """
-        usage:
-        python3 credit_card_validator credit_card_number
-
-        example:
-        python3 credit_card_validator 34678253793
-
-    """
-    print(msg)
-
-
-def get_cc_number():
-    if len(sys.argv) < 2:
-        usage()
-        sys.exit(1)
-
-    return sys.argv[1]
-
+import re
+import datetime
 
 def sum_digits(digit):
     if digit < 10:
@@ -32,9 +13,10 @@ def sum_digits(digit):
         sum = (digit % 10) + (digit // 10)
         return sum
 
-
+# Use Luhn's algorithm here to check a valid dard number
 def validate(cc_num):
     # reverse the credit card number
+    cc_num = str(cc_num)
     cc_num = cc_num[::-1]
     # convert to integer list
     cc_num = [int(x) for x in cc_num]
@@ -55,5 +37,80 @@ def validate(cc_num):
     return sum_of_digits % 10 == 0
 
 
-if __name__ == "__main__":
-    print(validate(get_cc_number()))
+def validate_date(expiry_date):
+    try:
+    # if 1:
+        expiry_date = datetime.datetime.strptime(expiry_date,'%Y/%m/%d')
+        # Make sure end date is >= start date
+        start_date = datetime.datetime.today()
+        # print(start_date)
+        # print(expiry_date)
+        # Check the expiry date input must be greater than or equal to the current dates
+        if expiry_date >= start_date:
+            print("correct date")
+        else:
+            print("Expiry date cannot be less than current date")
+            return False
+        return True
+    #Raise exception if the provided input is not in require date format
+    except ValueError:
+    # else:
+        print("Incorrect date format, should be YYYY-MM-DD")
+        return False
+
+
+def validate_cvv(card_cvv):
+    try:
+    # if 1:
+        if(int(card_cvv)):
+            #check the length of cvv number
+            if len(str(card_cvv)) == 3:
+                # print("ok")
+                return True
+            else:
+                # print("owkdodo")
+                return False
+                # return True
+    #Raise exception when cvv cannot be converted to int
+    except:
+    # else:
+        print("CVV must be 3 digit numeric number.")
+        return False
+
+def validate_name(card_owner_name):
+    try:
+        if card_owner_name.isalpha():
+            # print("ok")
+            return True
+        else:
+            # print("not ok")
+            return False
+    except:
+        # print("not ok")
+        return False
+#
+# if __name__ == "__main__":
+#     card_number = input("Enter the card number: ")
+#     while validate(card_number) != True:
+#         print("Your card number is invalid!")
+#         card_number = input("Enter the card number,enter q to exit.")
+#         if card_number=='q':
+#             continue
+#         else:
+#             print(validate(card_number))
+#
+#     card_owner_name = input("Enter Owner Name: ")
+#     print(validate_name(card_owner_name))
+#
+#     expiry_date = str(input("Please provide Expiry Date of card: "))
+#     print(validate_date(expiry_date))
+#     while validate_date(expiry_date) == False:
+#         expiry_date = str(input("Please provide Expiry Date of card: "))
+#         print(validate_date(expiry_date))
+#
+#     card_cvv = str(input("Enter CVV: "))
+#     print(validate_cvv(card_cvv))
+#     while(validate_cvv(card_cvv)==False):
+#         card_cvv = str(input("Enter CVV: "))
+#         print(validate_cvv(card_cvv))
+
